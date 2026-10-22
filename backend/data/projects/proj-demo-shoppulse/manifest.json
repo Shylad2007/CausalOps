@@ -1,0 +1,108 @@
+{
+  "project_id": "proj-demo-shoppulse",
+  "project_name": "ShopPulse-Ecommerce-API",
+  "manifest": {
+    "project_name": "ShopPulse-Ecommerce-API",
+    "detected_languages": [
+      "Python",
+      "JavaScript",
+      "SQL"
+    ],
+    "detected_frameworks": [
+      "FastAPI",
+      "React"
+    ],
+    "project_type": "full_stack",
+    "total_files": 42,
+    "scanned_files": 28,
+    "source_files": [
+      "backend/api/routes/users.py",
+      "backend/api/routes/orders.py",
+      "backend/services/payment.py",
+      "backend/core/database.py",
+      "frontend/src/App.jsx"
+    ]
+  },
+  "findings": [
+    {
+      "id": "VULN-001",
+      "rule_id": "RULE-SEC-001",
+      "category": "sql_injection",
+      "severity": "critical",
+      "title": "Raw SQL String Concatenation in User Search",
+      "description": "The search endpoint directly interpolates unsanitized user query parameter into an SQL SELECT statement.",
+      "file_path": "backend/api/routes/users.py",
+      "line_start": 38,
+      "line_end": 40,
+      "code_snippet": "query = f\"SELECT * FROM users WHERE username = '{search_query}'\"\ncursor.execute(query)\nresults = cursor.fetchall()",
+      "cwe_id": "CWE-89",
+      "owasp_category": "A03:2021-Injection",
+      "remediation_guidance": "Use parameterized queries: cursor.execute('SELECT * FROM users WHERE username = %s', (search_query,))",
+      "verified": true,
+      "evidence_metadata": {
+        "line_text": "query = f\"SELECT * FROM users WHERE username = '{search_query}'\"",
+        "source_sink": "HTTP GET /users/search -> search_query -> cursor.execute"
+      },
+      "finding_status": "FIX_PROPOSED",
+      "fixed_at": null
+    },
+    {
+      "id": "VULN-002",
+      "rule_id": "RULE-SEC-002",
+      "category": "command_injection",
+      "severity": "critical",
+      "title": "Untrusted Shell Execution in Diagnostic Utility",
+      "description": "Diagnostic endpoint invokes os.system using unescaped host IP parameter.",
+      "file_path": "backend/services/diagnostic.py",
+      "line_start": 18,
+      "line_end": 20,
+      "code_snippet": "def ping_host(host_ip: str):\n    cmd = f\"ping -c 1 {host_ip}\"\n    os.system(cmd)",
+      "cwe_id": "CWE-78",
+      "owasp_category": "A03:2021-Injection",
+      "remediation_guidance": "Use subprocess.run(['ping', '-c', '1', host_ip], shell=False) with strict IP address validation.",
+      "verified": true,
+      "evidence_metadata": {
+        "line_text": "os.system(cmd)",
+        "source_sink": "HTTP POST /diag/ping -> host_ip -> os.system"
+      },
+      "finding_status": "FIX_PROPOSED",
+      "fixed_at": null
+    },
+    {
+      "id": "VULN-003",
+      "rule_id": "RULE-SEC-003",
+      "category": "hardcoded_secret",
+      "severity": "high",
+      "title": "Hardcoded JWT Secret Token in Authentication Module",
+      "description": "Authentication signing secret key is directly committed in source code instead of environment variables.",
+      "file_path": "backend/core/security.py",
+      "line_start": 12,
+      "line_end": 13,
+      "code_snippet": "JWT_SECRET = \"super_secret_production_key_992184812\"\nALGORITHM = \"HS256\"",
+      "cwe_id": "CWE-798",
+      "owasp_category": "A07:2021-Identification and Authentication Failures",
+      "remediation_guidance": "Load JWT secret using os.environ.get('JWT_SECRET') and store actual keys in a secure secret manager.",
+      "verified": true,
+      "evidence_metadata": {
+        "line_text": "JWT_SECRET = \"super_secret_production_key_992184812\""
+      },
+      "finding_status": "FIX_PROPOSED",
+      "fixed_at": null
+    }
+  ],
+  "total_findings": 3,
+  "critical_count": 2,
+  "high_count": 1,
+  "medium_count": 0,
+  "low_count": 0,
+  "open_findings_count": 3,
+  "fixed_findings_count": 0,
+  "is_demo": true,
+  "scan_timestamp": "2026-10-19T14:43:02.766140+00:00",
+  "status": "COMPLETED",
+  "error_message": null,
+  "owner_username": null,
+  "repository_url": null,
+  "branch": null,
+  "commit_sha": null
+}

@@ -1,0 +1,298 @@
+{
+  "id": "scenario-proj-demo-shoppulse",
+  "title": "Incident Simulation: ShopPulse-Ecommerce-API",
+  "description": "Controlled security incident simulation mapped directly to ShopPulse-Ecommerce-API architecture and identified vulnerabilities.",
+  "severity": "critical",
+  "entities": [
+    {
+      "id": "ent-ext-client-proj-demo-shoppulse",
+      "name": "External Adversary (Untrusted IP)",
+      "type": "user",
+      "ip_address": "198.51.100.42",
+      "zone": "dmz",
+      "position_3d": [
+        -4.5,
+        0.0,
+        2.0
+      ],
+      "attributes": {
+        "origin": "Public Internet",
+        "threat_actor": "Adversary-proj-dem"
+      }
+    },
+    {
+      "id": "ent-gateway-proj-demo-shoppulse",
+      "name": "ShopPulse-Ecommerce-API Gateway Service",
+      "type": "server",
+      "ip_address": "10.0.1.15",
+      "zone": "dmz",
+      "position_3d": [
+        -1.5,
+        0.0,
+        0.0
+      ],
+      "attributes": {
+        "tier": "API Gateway",
+        "framework": "FastAPI/Reverse Proxy"
+      }
+    },
+    {
+      "id": "ent-idp-proj-demo-shoppulse",
+      "name": "Identity & Access Token Service",
+      "type": "identity_provider",
+      "ip_address": "10.0.2.10",
+      "zone": "identity",
+      "position_3d": [
+        0.0,
+        0.0,
+        3.5
+      ],
+      "attributes": {
+        "service": "JWT Token Authority",
+        "algorithm": "HS256"
+      }
+    },
+    {
+      "id": "tok-session-proj-demo-shoppulse",
+      "name": "Bearer-Token-proj-d",
+      "type": "session_token",
+      "ip_address": null,
+      "zone": "identity",
+      "position_3d": [
+        0.0,
+        1.2,
+        1.8
+      ],
+      "attributes": {
+        "issued_to": "admin_service",
+        "scope": "internal:all"
+      }
+    },
+    {
+      "id": "ent-comp-VULN-001",
+      "name": "users.py Handler (L38)",
+      "type": "process",
+      "ip_address": null,
+      "zone": "prod_internal",
+      "position_3d": [
+        2.0,
+        -3.0,
+        0.0
+      ],
+      "attributes": {
+        "file": "backend/api/routes/users.py",
+        "finding_id": "VULN-001",
+        "category": "sql_injection"
+      }
+    },
+    {
+      "id": "ent-sink-VULN-001",
+      "name": "PostgreSQL DB (VULN-001)",
+      "type": "database",
+      "ip_address": null,
+      "zone": "prod_internal",
+      "position_3d": [
+        5.0,
+        -3.0,
+        0.0
+      ],
+      "attributes": {
+        "target": "PostgreSQL DB",
+        "cwe": "CWE-89"
+      }
+    },
+    {
+      "id": "ent-comp-VULN-002",
+      "name": "diagnostic.py Handler (L18)",
+      "type": "process",
+      "ip_address": null,
+      "zone": "prod_internal",
+      "position_3d": [
+        2.0,
+        -1.0,
+        0.0
+      ],
+      "attributes": {
+        "file": "backend/services/diagnostic.py",
+        "finding_id": "VULN-002",
+        "category": "command_injection"
+      }
+    },
+    {
+      "id": "ent-sink-VULN-002",
+      "name": "System OS Shell (VULN-002)",
+      "type": "server",
+      "ip_address": null,
+      "zone": "prod_internal",
+      "position_3d": [
+        5.0,
+        -1.0,
+        0.0
+      ],
+      "attributes": {
+        "target": "System OS Shell",
+        "cwe": "CWE-78"
+      }
+    },
+    {
+      "id": "ent-comp-VULN-003",
+      "name": "security.py Handler (L12)",
+      "type": "process",
+      "ip_address": null,
+      "zone": "prod_internal",
+      "position_3d": [
+        2.0,
+        1.0,
+        0.0
+      ],
+      "attributes": {
+        "file": "backend/core/security.py",
+        "finding_id": "VULN-003",
+        "category": "hardcoded_secret"
+      }
+    },
+    {
+      "id": "ent-sink-VULN-003",
+      "name": "Credential Keyring (VULN-003)",
+      "type": "identity_provider",
+      "ip_address": null,
+      "zone": "prod_internal",
+      "position_3d": [
+        5.0,
+        1.0,
+        0.0
+      ],
+      "attributes": {
+        "target": "Credential Keyring",
+        "cwe": "CWE-798"
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "EVT-proj-01",
+      "timestamp": "2026-10-19T10:00:05Z",
+      "event_type": "network_probe",
+      "source_entity_id": "ent-ext-client-proj-demo-shoppulse",
+      "target_entity_id": "ent-gateway-proj-demo-shoppulse",
+      "actor_id": null,
+      "session_id": null,
+      "process_lineage": null,
+      "severity": "info",
+      "summary": "Automated security scanner probe directed at ShopPulse-Ecommerce-API Gateway.",
+      "observable_data": {
+        "src_ip": "198.51.100.42",
+        "path": "/api/v1/health",
+        "method": "GET"
+      },
+      "is_synthetic_counterfactual": false
+    },
+    {
+      "id": "EVT-proj-02",
+      "timestamp": "2026-10-19T10:01:15Z",
+      "event_type": "auth_token_access",
+      "source_entity_id": "ent-ext-client-proj-demo-shoppulse",
+      "target_entity_id": "tok-session-proj-demo-shoppulse",
+      "actor_id": null,
+      "session_id": "tok-session-proj-demo-shoppulse",
+      "process_lineage": null,
+      "severity": "high",
+      "summary": "Stolen session token tok-session-proj-demo-shoppulse utilized from external IP address.",
+      "observable_data": {
+        "token_id": "tok-session-proj-demo-shoppulse",
+        "subject": "admin_service"
+      },
+      "is_synthetic_counterfactual": false
+    },
+    {
+      "id": "EVT-proj-03",
+      "timestamp": "2026-10-19T10:03:30Z",
+      "event_type": "exploit_execution",
+      "source_entity_id": "ent-comp-VULN-001",
+      "target_entity_id": "ent-sink-VULN-001",
+      "actor_id": null,
+      "session_id": "tok-session-proj-demo-shoppulse",
+      "process_lineage": null,
+      "severity": "critical",
+      "summary": "Adversary exploited Raw SQL String Concatenation in User Search via gateway payload in backend/api/routes/users.py:38",
+      "observable_data": {
+        "finding_id": "VULN-001",
+        "cwe": "CWE-89",
+        "file": "backend/api/routes/users.py",
+        "line": 38,
+        "status": "FIX_PROPOSED"
+      },
+      "is_synthetic_counterfactual": false
+    },
+    {
+      "id": "EVT-proj-04",
+      "timestamp": "2026-10-19T10:04:30Z",
+      "event_type": "exploit_execution",
+      "source_entity_id": "ent-comp-VULN-002",
+      "target_entity_id": "ent-sink-VULN-002",
+      "actor_id": null,
+      "session_id": "tok-session-proj-demo-shoppulse",
+      "process_lineage": null,
+      "severity": "critical",
+      "summary": "Adversary exploited Untrusted Shell Execution in Diagnostic Utility via gateway payload in backend/services/diagnostic.py:18",
+      "observable_data": {
+        "finding_id": "VULN-002",
+        "cwe": "CWE-78",
+        "file": "backend/services/diagnostic.py",
+        "line": 18,
+        "status": "FIX_PROPOSED"
+      },
+      "is_synthetic_counterfactual": false
+    },
+    {
+      "id": "EVT-proj-05",
+      "timestamp": "2026-10-19T10:05:30Z",
+      "event_type": "exploit_execution",
+      "source_entity_id": "ent-comp-VULN-003",
+      "target_entity_id": "ent-sink-VULN-003",
+      "actor_id": null,
+      "session_id": "tok-session-proj-demo-shoppulse",
+      "process_lineage": null,
+      "severity": "critical",
+      "summary": "Adversary exploited Hardcoded JWT Secret Token in Authentication Module via gateway payload in backend/core/security.py:12",
+      "observable_data": {
+        "finding_id": "VULN-003",
+        "cwe": "CWE-798",
+        "file": "backend/core/security.py",
+        "line": 12,
+        "status": "FIX_PROPOSED"
+      },
+      "is_synthetic_counterfactual": false
+    }
+  ],
+  "ground_truth": {
+    "threat_actor": "External Adversary (proj-demo-shoppulse)",
+    "initial_access_vector": "API Gateway Route Traversal on ShopPulse-Ecommerce-API",
+    "root_cause_event_ids": [
+      "EVT-proj-03"
+    ],
+    "primary_causal_path": [
+      "EVT-proj-01",
+      "EVT-proj-02",
+      "EVT-proj-03",
+      "EVT-proj-04",
+      "EVT-proj-05"
+    ],
+    "critical_milestone_event_ids": [
+      "EVT-proj-01",
+      "EVT-proj-02",
+      "EVT-proj-05"
+    ],
+    "valid_explanations": [
+      "Adversary exploited identified codebase vulnerabilities in ShopPulse-Ecommerce-API to access protected sinks."
+    ],
+    "invalid_explanations": [
+      "Legitimate automated maintenance task",
+      "Physical datacenter compromise"
+    ]
+  },
+  "metadata": {
+    "project_id": "proj-demo-shoppulse",
+    "generated_at": "2026-10-20T06:20:54.068791+00:00"
+  }
+}
