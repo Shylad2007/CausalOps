@@ -1,28 +1,173 @@
 # CausalOps
 
-> **A Causal Intelligence Engine for Incident Reconstruction and Counterfactual Investigation**  
-> *Connect the evidence. Reconstruct the incident. Challenge the cause.*
+<p align="center">
+  <strong>Build with AI. Secure with confidence.</strong><br>
+  <em>AI proposes. Source evidence explains. Independent checks verify.</em>
+</p>
 
-CausalOps is an interactive, evidence-grounded cybersecurity incident investigation platform combining deterministic causal graph computation, 3D cyber-environment visualization, competing hypothesis evaluation, controlled counterfactual experimentation, and automated audit scorecards.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.14+-3776AB?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/React-19.2+-61DAFB?logo=react&logoColor=black" alt="React">
+  <img src="https://img.shields.io/badge/Three.js-R3F-black?logo=three.js&logoColor=white" alt="Three.js">
+  <img src="https://img.shields.io/badge/AI-Google_Gemma_4-4285F4?logo=google&logoColor=white" alt="Google Gemma">
+  <img src="https://img.shields.io/badge/Backend_Tests-91_passed-success" alt="Backend Tests">
+  <img src="https://img.shields.io/badge/Frontend_Tests-40_passed-success" alt="Frontend Tests">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
+</p>
 
 ---
 
-## Core Pillars & Differentiators
+## Codebase Architecture & Structural Topology
 
-1. **Deterministic Causal Event Graph**: Computed via explicit causal & structural rules in Python (`NetworkX`), strictly separating recorded telemetry facts from deterministic correlations and inferred causal hypotheses.
-2. **Interactive 3D Cyber World & Incident Replay**: Built with Three.js (`React Three Fiber` / `drei`), rendering simulated network entities (identities, workstations, servers, cloud infrastructure, processes) synchronized with the incident timeline.
-3. **Competing Hypotheses & Evidence**: Evidence-grounded competing hypotheses (supported and contradicted by explicit event IDs) assisted by Gemma 4 inference with deterministic validation.
-4. **Counterfactual Investigation Lab**: Controlled interventions (removing or modifying events) that trigger backend re-execution of the causal graph, isolating differential impact and testing investigative assertions without altering baseline state.
-5. **Evidence Audit & Investigation Scorecard**: Automated evaluation measuring claim grounding, evidence validity, contradiction handling, and fidelity against known ground truth.
+The following graph visualization was extracted using Graphify to map the module dependencies, causal relationships, and structural interconnectivity across the CausalOps backend and frontend engines:
+
+<p align="center">
+  <img src="docs/assets/graphify-repository-graph.png" alt="CausalOps Codebase Architecture Graph" width="90%">
+  <br>
+  <em>Figure 1: Full-system structural topology graph extracted with Graphify, visualizing cross-layer dependencies between AST analyzers, causal engines, Gemma 4 endpoints, and the React Three Fiber cyber world.</em>
+</p>
+
+---
+
+## Overview
+
+**CausalOps** is an AI-assisted application-security and causal intelligence platform designed to bridge the gap between static vulnerability detection, root-cause investigation, and verifiable remediation.
+
+Instead of presenting developers with endless walls of disconnected static warnings or unverified AI code suggestions, CausalOps operates on a foundational engineering principle:
+
+> **AI proposes. Source evidence explains. Independent checks verify.**
+
+CausalOps connects directly to your source-code repository, analyzes AST data-flow paths to uncover high-impact security vulnerabilities, reconstructs attack paths in interactive 3D and 2D causal DAGs, generates evidence-grounded hypotheses with **Google Gemma 4**, synthesizes contextual patches, and **independently verifies** that fixes eliminate the security flaw without breaking syntax or introducing regressions.
+
+---
+
+## The Problem & The Solution
+
+| The Challenge in Modern AppSec | The CausalOps Solution |
+| :--- | :--- |
+| **Alert Fatigue & Noise:** Static analysis tools generate hundreds of low-signal alerts without contextual evidence or causal links. | **Deterministic AST Data Flow:** Traces exact source-to-sink taint paths (CWE-89, CWE-78, CWE-22, CWE-798, CWE-942) with line-level code evidence and automated secret masking. |
+| **Disjointed Attack Context:** Developers cannot visualize how an entry point connects to sensitive data sinks or lateral processes. | **Interactive 3D/2D Causal Explorer:** Visualizes network zones, server nodes, identities, and processes in a 3D topology with chronological event replay and a 2D DAG. |
+| **Unreliable "Black Box" AI Suggestions:** Generic LLM-generated code patches frequently hallucinate APIs, break syntax, or fail to resolve the underlying bug. | **Gemma 4 with Independent Verification:** Google Gemma 4 (`gemma-4-26b-a4b-it`) synthesizes context-aware patches with unified diffs. CausalOps compiles, re-scans AST, and tests the patch before recommending approval. |
+| **Untested Remediation Outcomes:** Security teams deploy fixes without knowing whether the full attack chain has been severed. | **Counterfactual Investigation Lab:** Allows investigators to perform "what-if" mutations, sever incident nodes, and recompute graph downstream impact deterministically. |
+
+---
+
+## Application Gallery
+
+<p align="center">
+  <img src="docs/assets/dashboard-overview.png" alt="CausalOps Security Project Dashboard" width="95%">
+  <br>
+  <em>Figure 2: Security Project Dashboard displaying active repository status, severity breakdown, and quick access to investigation and remediation modules.</em>
+</p>
+
+<p align="center">
+  <img src="docs/assets/3d-attack-paths-workspace.png" alt="3D Security Attack-Path Explorer & Evidence Inspector" width="95%">
+  <br>
+  <em>Figure 3: Interactive 3D Cyber Topology with live node inspection, causal graph link tracking, and line-level event evidence records.</em>
+</p>
+
+<p align="center">
+  <img src="docs/assets/homepage-hero.png" alt="CausalOps Nightdesk Landing Page" width="95%">
+  <br>
+  <em>Figure 4: Public landing page built on the Nightdesk graphite design system, communicating the core 3-step value proposition and instant demo mode.</em>
+</p>
+
+---
+
+## System Architecture
+
+```mermaid
+flowchart TD
+    subgraph Ingestion["1. Repository Ingestion & Scoping"]
+        GH["GitHub Repository"] -->|"Scoped PAT + SSRF Guard"| INGEST["Safe Archive Ingestion"]
+        DEMO["Built-in ShopPulse Demo"] --> INGEST
+        INGEST --> DB[("SQLite Database<br>Encrypted at Rest")]
+    end
+
+    subgraph Analysis["2. Deterministic AST Analysis"]
+        INGEST --> AST["AST Static Code Scanner"]
+        AST -->|"Source-to-Sink Taint"| RULES{"Vulnerability Rules"}
+        RULES -->|"CWE-89"| SQLI["SQL Injection"]
+        RULES -->|"CWE-78"| CMD["Command Injection"]
+        RULES -->|"CWE-22"| TRAV["Path Traversal"]
+        RULES -->|"CWE-798"| SEC["Hardcoded Secret (Masked)"]
+        RULES -->|"CWE-942"| CORS["Insecure Wildcard CORS"]
+    end
+
+    subgraph Visualization["3. Causal & Topology Engine"]
+        SQLI & CMD & TRAV & SEC & CORS --> GRAPH["Deterministic NetworkX Graph"]
+        GRAPH --> CYBER["3D Cyber Scene (Three.js/Fiber)"]
+        GRAPH --> DAG["2D Causal DAG Flow"]
+        GRAPH --> CF_LAB["Counterfactual Lab (What-If Mutation)"]
+    end
+
+    subgraph AI_Reasoning["4. Hosted Gemma 4 Intelligence"]
+        GRAPH & RULES --> GEMMA["Google Gemma 4<br>(gemma-4-26b-a4b-it)"]
+        GEMMA --> HYPO["Competing Hypotheses & Evidence Reassessment"]
+        GEMMA --> PATCH_GEN["Contextual Patch Synthesis"]
+        GEMMA -.->|"Offline Fallback"| DET_FALLBACK["Deterministic Rule Engine"]
+    end
+
+    subgraph Verification["5. Independent Verification & PR Sync"]
+        PATCH_GEN --> SYNTAX["Python AST Syntax Check"]
+        SYNTAX --> RESCAN["Automated AST Re-Scan"]
+        RESCAN -->|"Vulnerability Resolved"| VERIFIED["Verified Fixed Status"]
+        VERIFIED --> PR["GitHub PR Publishing"]
+        PR --> SYNC["Post-Merge Verification Sync"]
+    end
+```
+
+---
+
+## Key Features
+
+### 1. Secure Single-Repository GitHub Integration
+- Connects to one user-selected repository at a time with strict token-scoping checks.
+- Encrypts access tokens at rest using **Fernet symmetric cryptography**.
+- Implements comprehensive **SSRF protection** validating repository URLs against private, internal, or loopback network addresses.
+- Resolves and pins exact commit SHAs to guarantee idempotent scans.
+
+### 2. Deterministic AST Code Scanner
+- Uses Python's native `ast` parser to trace real source code sinks and tainted inputs without code execution.
+- Automatically redacts and masks sensitive keys and JWT tokens in findings to prevent credential exposure.
+- Computes genuine line ranges, CWE IDs, severity scores, and file locations.
+
+### 3. Interactive 3D Cyber World & 2D Causal DAG
+- Rendered with **React Three Fiber** and **Three.js** in the graphite **Nightdesk** operations desk theme.
+- Visualizes security zones (`EXTERNAL`, `DMZ`, `PROD_INTERNAL`, `IDENTITY`), servers, databases, and processes with real-time hover states and camera orbit controls.
+- Synchronized with a 2D directed acyclic graph (DAG) tracing upstream causes and downstream impacts.
+
+### 4. Hosted Google Gemma 4 Integration
+- Calls Google's hosted **`gemma-4-26b-a4b-it`** model via the official `google-genai` SDK.
+- Configured with resilient **45-second deadlines** and token-budget constraints to prevent premature timeouts during complex JSON patch synthesis.
+- Evaluates **Competing Hypotheses** grounded strictly in recorded telemetry event IDs with support for investigator challenges.
+- Transparent provenance tracking (`source="gemma-4-26b-a4b-it"` vs. `source="deterministic_fallback"`).
+
+### 5. Counterfactual Investigation Lab
+- Formulates "what-if" hypotheses by mutating or severing events on an isolated copy of the incident scenario.
+- Re-executes the deterministic graph engine to measure exact edge severance, verifying whether breaking a link neutralizes an attack path.
+
+### 6. Evidence Audit & Reliability Scorecard
+- Mathematically scores AI findings against citation validity, unsupported claim detection, uncertainty calibration, and ground-truth benchmark isolation.
+
+### 7. Independent Fix Verification & GitHub PR Workflow
+- Automatically parses proposed remediation code using AST to verify syntax validity before applying.
+- Re-scans the patched file to prove that the targeted vulnerability is severed while leaving unrelated source code intact.
+- Publishes approved fixes to a new Git branch and creates a pull request on GitHub without touching protected default branches.
+- Monitors merge status and updates project findings to `VERIFIED_FIXED` upon post-merge sync.
 
 ---
 
 ## Tech Stack
 
-- **Frontend**: React (JavaScript), Vite, Tailwind CSS, Three.js, React Three Fiber (`@react-three/fiber`), `@react-three/drei`, Lucide Icons, Zustand.
-- **Backend**: Python 3.14+, FastAPI, Pydantic v2, NetworkX, Uvicorn.
-- **AI / LLM**: Gemma 4 integration via structured inference endpoints, validated backend-only with deterministic fallbacks.
-- **Testing**: Pytest (backend), Vitest & React Testing Library (frontend).
+| Domain | Technologies |
+| :--- | :--- |
+| **Frontend** | React 19, Vite 8, Tailwind CSS v4, Three.js, React Three Fiber (`@react-three/fiber`), Drei (`@react-three/drei`), Zustand, Lucide React |
+| **Backend** | Python 3.14+, FastAPI, Pydantic v2, SQLite3, NetworkX, Uvicorn, Cryptography (Fernet), HTTPX |
+| **AI / Inference** | Google Gemma 4 (`gemma-4-26b-a4b-it`) via Google GenAI SDK with deterministic fallback |
+| **Design System** | Nightdesk (graphite operations desk theme, monospace typography, high-contrast badges) |
+| **Testing** | Pytest (backend), Vitest & React Testing Library (frontend) |
 
 ---
 
@@ -32,139 +177,166 @@ CausalOps is an interactive, evidence-grounded cybersecurity incident investigat
 CausalOps/
 ├── backend/
 │   ├── app/
-│   │   ├── api/           # FastAPI route endpoints
-│   │   ├── engine/        # Deterministic graph builder & counterfactual lab
-│   │   ├── models/        # Pydantic schemas (events, relationships, hypotheses)
-│   │   ├── ai/            # Gemma 4 service client & prompt engine
-│   │   ├── scenarios/     # Predefined incident scenario JSONs & ground truth
-│   │   └── audit/         # Scorecard & evidence validation engine
-│   ├── tests/             # Pytest test suite
-│   ├── requirements.txt
-│   └── main.py
+│   │   ├── ai/            # Google Gemma 4 service client, timeouts & fallbacks
+│   │   ├── analysis/      # AST code scanner, vulnerability rules, GitHub ingest
+│   │   ├── api/           # FastAPI routers (auth, codebase, github_auth, scenarios)
+│   │   ├── audit/         # Scorecard evaluation & ground-truth audit engine
+│   │   ├── auth/          # PBKDF2 hashing, session tokens, project authorization
+│   │   ├── db/            # SQLite database manager & automated migrations
+│   │   ├── engine/        # NetworkX attack graph builder & counterfactual engine
+│   │   ├── models/        # Pydantic schemas (findings, events, patches, graphs)
+│   │   └── services/      # Project storage, Fernet credential encryption, GitHub PRs
+│   ├── data/
+│   │   └── projects/      # Canonical built-in demo project (ShopPulse API)
+│   ├── tests/             # 16 Pytest test modules (91 tests)
+│   ├── main.py            # FastAPI application entrypoint
+│   └── requirements.txt
 ├── frontend/
 │   ├── src/
-│   │   ├── components/    # 3D Cyber Scene, Timeline, Graph Viewer, Inspector
-│   │   ├── store/         # Zustand global state (scenario, playback, active filters)
-│   │   ├── api/           # Backend client service
-│   │   └── App.jsx
+│   │   ├── api/           # Backend HTTP client
+│   │   ├── components/    # 3D Cyber Scene, 2D DAG, FixesView, HypothesesView
+│   │   ├── store/         # Zustand global state (investigationStore, authStore)
+│   │   └── test/          # 11 Vitest test suites (40 tests)
 │   ├── package.json
 │   └── vite.config.js
-├── docs/                  # Architectural specs, API contracts, execution progress
+├── docs/
+│   ├── assets/            # Graphify architecture graph & application screenshots
+│   ├── API_CONTRACT.md    # Complete OpenAPI contract & endpoint specifications
+│   ├── ARCHITECTURE.md    # Architectural invariants & security boundaries
+│   ├── DECISIONS.md       # ADRs on causal modeling, R3F, and Gemma inference
+│   └── PROJECT_SPEC.md    # Product specifications & vulnerability taxonomy
+├── test-fixtures/         # Synthetic vulnerable lab ZIP & source files
+├── scripts/               # GitHub PR helper, repository validation & search tools
+├── adapters/              # AI assistant integration guides (Claude, Gemini, GPT)
+├── .gitignore
+├── pytest.ini
 └── README.md
 ```
 
 ---
 
-## How to Run Locally
+## Getting Started
 
 ### Prerequisites
-- Node.js >= 18 (Tested on v24.14.0)
-- Python >= 3.10 (Tested on Python 3.14.3)
-- A `backend/.env` file with `GEMMA_API_KEY` and `GEMMA_MODEL_NAME` (never commit this file)
+- **Node.js** >= 18 (Tested on v24)
+- **Python** >= 3.10 (Tested on Python 3.14.3)
+- **Git**
 
-### 1. Backend
+---
 
-```powershell
-# From the repo root
+### 1. Backend Setup
+
+```bash
+# Navigate to the backend directory
 cd backend
 
-# Create and activate the virtual environment
+# Create and activate virtual environment
 python -m venv venv
-.\venv\Scripts\activate        # Windows PowerShell
-# source venv/bin/activate      # Linux / macOS
+
+# Windows PowerShell
+.\venv\Scripts\activate
+# macOS / Linux
+# source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Start the API server (runs on http://localhost:8000)
-uvicorn main:app --reload --port 8000
+# Configure environment variables
+cp .env.example .env
 ```
 
-### 2. Frontend
+Open `backend/.env` and supply your credentials:
+```env
+GEMMA_API_KEY=your_google_ai_studio_api_key
+GEMMA_MODEL_NAME=gemma-4-26b-a4b-it
+GEMMA_TIMEOUT_MS=45000
+CREDENTIAL_ENCRYPTION_KEY=
+```
+*(Note: If `GEMMA_API_KEY` is not provided, CausalOps automatically engages its built-in deterministic fallback engine for all remediation and hypothesis workflows).*
 
-```powershell
-# In a separate terminal, from the repo root
+Start the backend server:
+```bash
+uvicorn main:app --reload --port 8000
+```
+The API documentation is interactively available at `http://localhost:8000/docs`.
+
+---
+
+### 2. Frontend Setup
+
+In a separate terminal:
+
+```bash
+# Navigate to the frontend directory
 cd frontend
+
+# Install dependencies
 npm install
+
+# Start the Vite development server
 npm run dev
 ```
 
-Open **http://localhost:5173** in your browser.
+Open **`http://localhost:5173`** in your browser.
 
-> The Vite dev server proxies all `/api` requests to `http://localhost:8000`, so both services must be running simultaneously.
+> **Tip:** You can immediately explore CausalOps without entering credentials by clicking **"Load Demo Project"** (ShopPulse e-commerce API) or logging in with pre-configured analyst test credentials.
 
 ---
 
 ## Running Tests
 
-### Backend (pytest — all 23 tests, hermetic with mocks)
+Both backend and frontend test suites are thoroughly instrumented with hermetic mocks and regression guards:
 
-```powershell
-# From the repo root
-.\backend\venv\Scripts\pytest.exe -v
+### Backend Test Suite (Pytest — 91 Tests)
+
+```bash
+# From the repository root
+.\backend\venv\Scripts\pytest.exe backend/tests -v
 ```
 
-### Frontend (vitest — all 9 tests)
+```text
+======================= 91 passed in 459.89s =======================
+```
 
-```powershell
-# From frontend/
+### Frontend Test Suite (Vitest — 40 Tests)
+
+```bash
+# From the frontend directory
 cd frontend
 npx vitest run
 ```
 
-### Production Build
+```text
+Test Files  11 passed (11)
+     Tests  40 passed (40)
+  Duration  26.83s
+```
 
-```powershell
-# From frontend/
-npx vite build
+### Production Build Verification
+
+```bash
+# Compile and optimize production bundles
+cd frontend
+npm run build
+```
+
+```text
+✓ 2504 modules transformed.
+✓ built in 1.07s
 ```
 
 ---
 
-## Environment Configuration
+## Security & Privacy Invariants
 
-Create `backend/.env` with:
-
-```
-GEMMA_API_KEY=your_google_ai_api_key
-GEMMA_MODEL_NAME=gemma-4-26b-a4b-it
-```
-
-> **Security**: `.gitignore` already excludes `backend/.env`. Never commit this file.  
-> If Gemma 4 is unavailable, all AI-dependent endpoints return deterministic fallback responses automatically.
+1. **Zero Secret Persistence in Source:** `.env` files, actual PAT credentials, and private keys are strictly excluded from source control.
+2. **Encrypted at Rest:** All GitHub repository access tokens stored in SQLite are encrypted with **Fernet (AES-128-CBC + HMAC-SHA256)**.
+3. **No Code Execution During Scanning:** AST parsing inspects code structure statically without executing untrusted scripts.
+4. **Independent Fix Verification:** AI-suggested code fixes must pass static syntax validation and AST re-scanning before being accepted.
+5. **No Hallucinated Causal Links:** Causal graph relationships require verifiable telemetry citations; unevidenced AI claims are flagged in the Investigation Scorecard.
 
 ---
 
-## Investigation Workflow
+## License
 
-1. **Overview** — Inspect the incident scenario summary with live stats from the backend.
-2. **3D Cyber World** — Navigate the 3D network topology; use the timeline scrubber to replay events chronologically. Active nodes and links highlight in real time.
-3. **Causal Event Graph** — Inspect the deterministic NetworkX DAG: upstream causes, downstream effects, and edge rule provenance for each selected event.
-4. **Competing Hypotheses** — Trigger Gemma 4 structured inference to generate multi-angle forensic hypotheses grounded in event IDs; challenge any hypothesis interactively.
-5. **Counterfactual Lab** — Remove or mutate events on an isolated copy of the scenario, recompute the graph, and observe deterministic downstream diffs and Gemma 4 reassessment.
-6. **Audit Scorecard** — Run the deterministic evidence audit: citation validity, semantic support, uncertainty calibration, counterfactual consistency, and isolated ground-truth benchmark fidelity.
-
----
-
-## Phase Completion Status
-
-| Phase | Description | Status |
-|---|---|---|
-| Phase 0 | Repository Audit and Project Blueprint | **COMPLETE** |
-| Phase 1 | Working Application Foundation | **COMPLETE** |
-| Phase 2 | Scenario Engine and Deterministic Causal Graph | **COMPLETE** |
-| Phase 3 | Interactive 3D Cyber World and Replay | **COMPLETE** |
-| Phase 4 | Causal Investigation Workspace and Evidence Audit | **COMPLETE** |
-| Phase 5 | Gemma 4 Integration | **COMPLETE** |
-| Phase 6 | Counterfactual Investigation Lab | **COMPLETE** |
-| Phase 7 | Evaluation, Scorecard, and Reliability | **COMPLETE** |
-| Phase 8 | Product Polish and Final Local Verification | **COMPLETE** |
-
----
-
-## Known Limitations
-
-- The large bundle size warning from `vite build` (~1.2 MB JS) is expected — Three.js accounts for the majority. Code splitting can be added in a future phase.
-- The `THREE_CJS_DEPRECATED` warning in frontend tests is a transitive `three` library issue, not a project defect.
-- Gemma 4 responses may vary by network latency; all endpoints have deterministic fallbacks.
-- The scenario currently uses a single built-in incident (`scenario-apt-solar-infiltrate`). Multi-scenario loading is planned for a future phase.
+This project is licensed under the [MIT License](LICENSE).
