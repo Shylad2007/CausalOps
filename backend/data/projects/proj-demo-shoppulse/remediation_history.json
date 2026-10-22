@@ -1,0 +1,112 @@
+[
+  {
+    "finding_id": "VULN-001",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T14:39:37.692150+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "VERIFIED_FIXED",
+    "timestamp": "2026-10-19T14:39:37.694720+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T14:42:37.466650+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T14:42:47.951481+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T14:42:47.959052+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T14:42:50.671506+00:00"
+  },
+  {
+    "finding_id": "VULN-002",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T14:42:54.548249+00:00"
+  },
+  {
+    "finding_id": "VULN-003",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T14:42:58.553460+00:00"
+  },
+  {
+    "finding_id": "VULN-003",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T14:43:02.766538+00:00"
+  },
+  {
+    "finding_id": "VULN-002",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T14:43:02.768386+00:00"
+  },
+  {
+    "finding_id": "VULN-003",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T14:45:23.955884+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T14:58:06.139212+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "VERIFIED_FIXED",
+    "timestamp": "2026-10-19T14:58:06.154591+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "VERIFICATION_FAILED",
+    "timestamp": "2026-10-19T14:58:06.165702+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T15:05:32.328889+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "VERIFIED_FIXED",
+    "timestamp": "2026-10-19T15:05:32.338821+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "VERIFICATION_FAILED",
+    "timestamp": "2026-10-19T15:05:32.351790+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T15:10:04.531056+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "VERIFIED_FIXED",
+    "timestamp": "2026-10-19T15:10:04.552370+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "VERIFICATION_FAILED",
+    "timestamp": "2026-10-19T15:10:04.576302+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-19T15:17:33.241176+00:00"
+  },
+  {
+    "finding_id": "VULN-001",
+    "status": "FIX_PROPOSED",
+    "timestamp": "2026-10-20T02:38:09.380703+00:00"
+  }
+]
