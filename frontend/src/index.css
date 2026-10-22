@@ -1,0 +1,782 @@
+/* ============================================================
+   CausalOps — Nightdesk Design System
+   v2.0 | Graphite Operations Desk
+   "Grey until the numbers say otherwise."
+   ============================================================ */
+
+/* 1. Font Imports */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* 2. Tailwind base (keep — utilities still used alongside) */
+@import "tailwindcss";
+
+/* ============================================================
+   3. Design Tokens — Nightdesk Graphite Palette
+   ============================================================ */
+@layer base {
+  :root {
+    /* Surfaces */
+    --nd-bg-base:        #111214;
+    --nd-bg-surface:     #18191c;
+    --nd-bg-elevated:    #1e2025;
+    --nd-bg-hover:       #242529;
+    --nd-bg-active:      #2a2b31;
+
+    /* Borders */
+    --nd-border-subtle:  #242529;
+    --nd-border-default: #30313a;
+    --nd-border-strong:  #44454f;
+    --nd-border-focus:   #3b82f6;
+
+    /* Text */
+    --nd-text-primary:   #f0f1f3;
+    --nd-text-secondary: #9a9ca4;
+    --nd-text-muted:     #5c5e68;
+    --nd-text-code:      #7dd3fc;
+    --nd-text-inverse:   #111214;
+
+    /* Accent — blue (purposeful: primary actions, active nav) */
+    --nd-accent:         #3b82f6;
+    --nd-accent-hover:   #2563eb;
+    --nd-accent-subtle:  rgba(59, 130, 246, 0.12);
+    --nd-accent-border:  rgba(59, 130, 246, 0.35);
+
+    /* Semantic Status */
+    --nd-critical:       #ef4444;
+    --nd-critical-bg:    rgba(239, 68, 68, 0.10);
+    --nd-critical-border:rgba(239, 68, 68, 0.25);
+
+    --nd-high:           #f97316;
+    --nd-high-bg:        rgba(249, 115, 22, 0.10);
+    --nd-high-border:    rgba(249, 115, 22, 0.25);
+
+    --nd-medium:         #eab308;
+    --nd-medium-bg:      rgba(234, 179, 8, 0.10);
+    --nd-medium-border:  rgba(234, 179, 8, 0.25);
+
+    --nd-low:            #22c55e;
+    --nd-low-bg:         rgba(34, 197, 94, 0.10);
+    --nd-low-border:     rgba(34, 197, 94, 0.25);
+
+    --nd-info:           #3b82f6;
+    --nd-info-bg:        rgba(59, 130, 246, 0.10);
+    --nd-info-border:    rgba(59, 130, 246, 0.25);
+
+    /* Typography Scale — optimized for comfortable readability at 100% zoom */
+    --nd-font-sans:      'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --nd-font-mono:      'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+    --nd-text-xs:        12px;
+    --nd-text-sm:        13px;
+    --nd-text-base:      14px;
+    --nd-text-md:        15px;
+    --nd-text-lg:        18px;
+    --nd-text-xl:        22px;
+    --nd-text-2xl:       26px;
+
+    --nd-leading-tight:  1.3;
+    --nd-leading-base:   1.5;
+    --nd-leading-loose:  1.7;
+
+    /* Spacing (4px base grid) */
+    --nd-space-1:   4px;
+    --nd-space-2:   8px;
+    --nd-space-3:   12px;
+    --nd-space-4:   16px;
+    --nd-space-5:   20px;
+    --nd-space-6:   24px;
+    --nd-space-8:   32px;
+    --nd-space-10:  40px;
+    --nd-space-12:  48px;
+
+    /* Border Radii */
+    --nd-radius-xs: 3px;
+    --nd-radius-sm: 4px;
+    --nd-radius-md: 6px;
+    --nd-radius-lg: 8px;
+    --nd-radius-xl: 12px;
+
+    /* Shadows */
+    --nd-shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --nd-shadow-md:  0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
+    --nd-shadow-lg:  0 16px 40px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+    --nd-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+
+    /* Transitions */
+    --nd-transition-fast:   100ms ease;
+    --nd-transition-base:   150ms ease;
+    --nd-transition-slow:   250ms ease;
+
+    /* Layout */
+    --nd-header-height:     52px;
+    --nd-timeline-height:   52px;
+    --nd-sidebar-width:     220px;
+    --nd-panel-width:       320px;
+    --nd-content-max:       1280px;
+  }
+
+  /* ============================================================
+     4. Base Reset
+     ============================================================ */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    font-size: 14px;
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--nd-bg-base);
+    color: var(--nd-text-primary);
+    font-family: var(--nd-font-sans);
+    font-size: var(--nd-text-base);
+    line-height: var(--nd-leading-base);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100vh;
+    width: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Scrollbar styling */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--nd-border-strong) transparent;
+  }
+  *::-webkit-scrollbar { width: 5px; height: 5px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--nd-border-strong);
+    border-radius: 99px;
+  }
+
+  /* Focus rings */
+  :focus-visible {
+    outline: 2px solid var(--nd-border-focus);
+    outline-offset: 2px;
+  }
+
+  /* Selection */
+  ::selection {
+    background: var(--nd-accent-subtle);
+    color: var(--nd-text-primary);
+  }
+}
+
+/* ============================================================
+   5. Component Utilities — Nightdesk Vocabulary
+   ============================================================ */
+@layer components {
+
+  /* --- Surfaces --- */
+  .nd-surface {
+    background-color: var(--nd-bg-surface);
+    border: 1px solid var(--nd-border-default);
+    border-radius: var(--nd-radius-lg);
+  }
+
+  .nd-surface-elevated {
+    background-color: var(--nd-bg-elevated);
+    border: 1px solid var(--nd-border-strong);
+    border-radius: var(--nd-radius-lg);
+    box-shadow: var(--nd-shadow-md);
+  }
+
+  .nd-panel {
+    background-color: var(--nd-bg-surface);
+    border-left: 1px solid var(--nd-border-default);
+  }
+
+  /* --- Typography --- */
+  .nd-heading {
+    font-size: var(--nd-text-lg);
+    font-weight: 700;
+    color: var(--nd-text-primary);
+    line-height: var(--nd-leading-tight);
+    letter-spacing: -0.01em;
+  }
+
+  .nd-subheading {
+    font-size: var(--nd-text-md);
+    font-weight: 600;
+    color: var(--nd-text-primary);
+    line-height: var(--nd-leading-tight);
+  }
+
+  .nd-label {
+    font-size: var(--nd-text-xs);
+    font-weight: 600;
+    color: var(--nd-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .nd-label-mono {
+    font-family: var(--nd-font-mono);
+    font-size: var(--nd-text-xs);
+    color: var(--nd-text-code);
+    letter-spacing: 0.02em;
+  }
+
+  .nd-body {
+    font-size: var(--nd-text-base);
+    color: var(--nd-text-secondary);
+    line-height: var(--nd-leading-base);
+  }
+
+  .nd-caption {
+    font-size: var(--nd-text-xs);
+    color: var(--nd-text-muted);
+    line-height: var(--nd-leading-loose);
+  }
+
+  /* --- Badges --- */
+  .nd-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: var(--nd-radius-xs);
+    font-size: var(--nd-text-xs);
+    font-weight: 600;
+    line-height: 18px;
+    border: 1px solid transparent;
+  }
+
+  .nd-badge-critical {
+    background-color: var(--nd-critical-bg);
+    border-color: var(--nd-critical-border);
+    color: var(--nd-critical);
+  }
+
+  .nd-badge-high {
+    background-color: var(--nd-high-bg);
+    border-color: var(--nd-high-border);
+    color: var(--nd-high);
+  }
+
+  .nd-badge-medium {
+    background-color: var(--nd-medium-bg);
+    border-color: var(--nd-medium-border);
+    color: var(--nd-medium);
+  }
+
+  .nd-badge-low {
+    background-color: var(--nd-low-bg);
+    border-color: var(--nd-low-border);
+    color: var(--nd-low);
+  }
+
+  .nd-badge-info {
+    background-color: var(--nd-info-bg);
+    border-color: var(--nd-info-border);
+    color: var(--nd-info);
+  }
+
+  .nd-badge-neutral {
+    background-color: var(--nd-bg-hover);
+    border-color: var(--nd-border-default);
+    color: var(--nd-text-secondary);
+  }
+
+  /* --- Buttons --- */
+  .nd-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    border-radius: var(--nd-radius-md);
+    font-size: var(--nd-text-sm);
+    font-weight: 500;
+    font-family: var(--nd-font-sans);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background-color var(--nd-transition-fast),
+                border-color var(--nd-transition-fast),
+                color var(--nd-transition-fast),
+                box-shadow var(--nd-transition-fast);
+    white-space: nowrap;
+    user-select: none;
+    outline: none;
+  }
+
+  .nd-btn:focus-visible {
+    outline: 2px solid var(--nd-border-focus);
+    outline-offset: 2px;
+  }
+
+  .nd-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .nd-btn-primary {
+    background-color: var(--nd-accent);
+    border-color: var(--nd-accent);
+    color: #ffffff;
+  }
+
+  .nd-btn-primary:hover:not(:disabled) {
+    background-color: var(--nd-accent-hover);
+    border-color: var(--nd-accent-hover);
+  }
+
+  .nd-btn-ghost {
+    background-color: transparent;
+    border-color: var(--nd-border-default);
+    color: var(--nd-text-secondary);
+  }
+
+  .nd-btn-ghost:hover:not(:disabled) {
+    background-color: var(--nd-bg-hover);
+    border-color: var(--nd-border-strong);
+    color: var(--nd-text-primary);
+  }
+
+  .nd-btn-danger {
+    background-color: transparent;
+    border-color: var(--nd-critical-border);
+    color: var(--nd-critical);
+  }
+
+  .nd-btn-danger:hover:not(:disabled) {
+    background-color: var(--nd-critical-bg);
+  }
+
+  .nd-btn-sm {
+    padding: 5px 10px;
+    font-size: var(--nd-text-xs);
+    gap: 5px;
+  }
+
+  .nd-btn-lg {
+    padding: 12px 24px;
+    font-size: var(--nd-text-md);
+    font-weight: 600;
+  }
+
+  /* --- Inputs --- */
+  .nd-input {
+    width: 100%;
+    background-color: var(--nd-bg-base);
+    border: 1px solid var(--nd-border-default);
+    border-radius: var(--nd-radius-md);
+    color: var(--nd-text-primary);
+    font-family: var(--nd-font-sans);
+    font-size: var(--nd-text-sm);
+    padding: 9px 12px;
+    transition: border-color var(--nd-transition-fast), box-shadow var(--nd-transition-fast);
+    outline: none;
+  }
+
+  .nd-input::placeholder {
+    color: var(--nd-text-muted);
+  }
+
+  .nd-input:focus {
+    border-color: var(--nd-border-focus);
+    box-shadow: 0 0 0 2px var(--nd-accent-subtle);
+  }
+
+  .nd-input:focus-visible {
+    outline: none;
+    border-color: var(--nd-border-focus);
+    box-shadow: 0 0 0 2px var(--nd-accent-subtle);
+  }
+
+  .nd-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* --- Dividers --- */
+  .nd-divider {
+    height: 1px;
+    background-color: var(--nd-border-subtle);
+    border: none;
+    margin: 0;
+  }
+
+  .nd-divider-v {
+    width: 1px;
+    background-color: var(--nd-border-subtle);
+    align-self: stretch;
+  }
+
+  /* --- Tables --- */
+  .nd-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--nd-text-sm);
+  }
+
+  .nd-table th {
+    padding: 8px 12px;
+    text-align: left;
+    font-size: var(--nd-text-xs);
+    font-weight: 600;
+    color: var(--nd-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--nd-border-subtle);
+  }
+
+  .nd-table td {
+    padding: 10px 12px;
+    color: var(--nd-text-secondary);
+    border-bottom: 1px solid var(--nd-border-subtle);
+    vertical-align: middle;
+  }
+
+  .nd-table tr:hover td {
+    background-color: var(--nd-bg-hover);
+    cursor: pointer;
+  }
+
+  /* --- Status dots --- */
+  .nd-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  .nd-dot-success { background-color: var(--nd-low); }
+  .nd-dot-error   { background-color: var(--nd-critical); }
+  .nd-dot-warning { background-color: var(--nd-medium); }
+  .nd-dot-info    { background-color: var(--nd-info); }
+  .nd-dot-muted   { background-color: var(--nd-text-muted); }
+  .nd-dot-pulse   { animation: nd-pulse 2s ease-in-out infinite; }
+
+  @keyframes nd-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
+
+  /* --- Loading spinner --- */
+  .nd-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--nd-border-default);
+    border-top-color: var(--nd-accent);
+    border-radius: 50%;
+    animation: nd-spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  .nd-spinner-sm {
+    width: 12px;
+    height: 12px;
+  }
+
+  @keyframes nd-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* --- Toast / notification --- */
+  .nd-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: var(--nd-radius-lg);
+    font-size: var(--nd-text-sm);
+    box-shadow: var(--nd-shadow-md);
+    border: 1px solid var(--nd-border-default);
+    background-color: var(--nd-bg-elevated);
+    color: var(--nd-text-primary);
+  }
+
+  /* --- Empty state --- */
+  .nd-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--nd-space-12) var(--nd-space-8);
+    color: var(--nd-text-muted);
+    gap: var(--nd-space-3);
+  }
+
+  .nd-empty-icon {
+    color: var(--nd-border-strong);
+    margin-bottom: var(--nd-space-2);
+  }
+
+  /* --- Code block --- */
+  .nd-code {
+    font-family: var(--nd-font-mono);
+    font-size: var(--nd-text-xs);
+    background-color: var(--nd-bg-base);
+    border: 1px solid var(--nd-border-subtle);
+    border-radius: var(--nd-radius-sm);
+    padding: 2px 6px;
+    color: var(--nd-text-code);
+  }
+
+  /* --- Page section header --- */
+  .nd-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: var(--nd-space-3);
+    border-bottom: 1px solid var(--nd-border-subtle);
+    margin-bottom: var(--nd-space-4);
+  }
+
+  /* --- Workspace page layout --- */
+  .nd-workspace {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background-color: var(--nd-bg-base);
+    overflow: hidden;
+  }
+
+  .nd-workspace-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--nd-space-3);
+    padding: 0 var(--nd-space-5);
+    height: 48px;
+    flex-shrink: 0;
+    background-color: var(--nd-bg-surface);
+    border-bottom: 1px solid var(--nd-border-default);
+  }
+
+  .nd-workspace-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .nd-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--nd-space-5);
+  }
+
+  /* --- Segmented control --- */
+  .nd-segmented {
+    display: flex;
+    align-items: center;
+    background-color: var(--nd-bg-base);
+    border: 1px solid var(--nd-border-default);
+    border-radius: var(--nd-radius-md);
+    padding: 3px;
+    gap: 2px;
+  }
+
+  .nd-segmented-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: var(--nd-radius-sm);
+    font-size: var(--nd-text-xs);
+    font-weight: 500;
+    color: var(--nd-text-muted);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    transition: background-color var(--nd-transition-fast), color var(--nd-transition-fast);
+    user-select: none;
+  }
+
+  .nd-segmented-item:hover {
+    color: var(--nd-text-secondary);
+  }
+
+  .nd-segmented-item.active {
+    background-color: var(--nd-accent);
+    color: #ffffff;
+  }
+
+  /* --- Metric card (for scorecards, dashboards) --- */
+  .nd-metric-card {
+    background-color: var(--nd-bg-surface);
+    border: 1px solid var(--nd-border-default);
+    border-radius: var(--nd-radius-lg);
+    padding: var(--nd-space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--nd-space-1);
+  }
+
+  .nd-metric-label {
+    font-size: var(--nd-text-xs);
+    font-weight: 600;
+    color: var(--nd-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .nd-metric-value {
+    font-size: var(--nd-text-xl);
+    font-weight: 700;
+    color: var(--nd-text-primary);
+    line-height: 1;
+  }
+
+  .nd-metric-sub {
+    font-size: var(--nd-text-xs);
+    color: var(--nd-text-muted);
+  }
+
+  /* ============================================================
+     Landing & Auth Page — Nightdesk Polish
+     Entrance animations, glow orbs, card hover effects
+     ============================================================ */
+
+  /* Entrance animations */
+  @keyframes nd-fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes nd-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes nd-glow-drift {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(30px, -20px) scale(1.08); }
+    100% { transform: translate(0, 0) scale(1); }
+  }
+
+  /* Utility animation classes */
+  .nd-animate-fade-up {
+    animation: nd-fade-in-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .nd-animate-fade-up-delay-1 {
+    animation: nd-fade-in-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+  }
+
+  .nd-animate-fade-up-delay-2 {
+    animation: nd-fade-in-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both;
+  }
+
+  .nd-animate-fade-up-delay-3 {
+    animation: nd-fade-in-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both;
+  }
+
+  .nd-animate-fade-up-delay-4 {
+    animation: nd-fade-in-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both;
+  }
+
+  .nd-animate-fade-in {
+    animation: nd-fade-in 0.4s ease both;
+  }
+
+  /* Glow orb decorative element */
+  .nd-glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(80px);
+    animation: nd-glow-drift 12s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  /* Step cards with hover elevation */
+  .nd-step-card {
+    background-color: var(--nd-bg-surface);
+    border: 1px solid var(--nd-border-default);
+    border-radius: var(--nd-radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: border-color var(--nd-transition-slow),
+                box-shadow var(--nd-transition-slow),
+                transform var(--nd-transition-slow);
+    will-change: transform;
+  }
+
+  .nd-step-card:hover {
+    border-color: var(--nd-accent-border);
+    box-shadow: 0 0 0 1px var(--nd-accent-border), var(--nd-shadow-md);
+    transform: translateY(-2px);
+  }
+
+  /* Auth card — polished form container */
+  .nd-auth-card {
+    width: 100%;
+    background-color: var(--nd-bg-surface);
+    border: 1px solid var(--nd-border-default);
+    border-radius: var(--nd-radius-xl);
+    box-shadow: var(--nd-shadow-lg);
+    animation: nd-fade-in-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nd-auth-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 60% 40% at 50% 0%,
+      rgba(59, 130, 246, 0.055) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  /* nd-secondary button variant */
+  .nd-btn-secondary {
+    background-color: var(--nd-bg-elevated);
+    border-color: var(--nd-border-default);
+    color: var(--nd-text-primary);
+  }
+
+  .nd-btn-secondary:hover:not(:disabled) {
+    background-color: var(--nd-bg-hover);
+    border-color: var(--nd-border-strong);
+  }
+
+  /* Reduce motion overrides */
+  @media (prefers-reduced-motion: reduce) {
+    .nd-animate-fade-up,
+    .nd-animate-fade-up-delay-1,
+    .nd-animate-fade-up-delay-2,
+    .nd-animate-fade-up-delay-3,
+    .nd-animate-fade-up-delay-4,
+    .nd-animate-fade-in,
+    .nd-auth-card {
+      animation: none !important;
+    }
+
+    .nd-step-card:hover {
+      transform: none;
+    }
+
+    .nd-glow-orb {
+      animation: none !important;
+    }
+  }
+}
